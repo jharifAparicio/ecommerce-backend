@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/books.css">
+</head>
+
+<body>
+    <div class="contenedor">
+        <header class="header">
+            <div class="header1">
+                <div>
+                    <img src="img/logo.png" class="logo">
+                </div>
+            </div>
+            <div class="header2">
+                <div class="menu">Inicio</div>
+                <div class="menu">Productos</div>
+                <div class="menu">Sobre Nosotros</div>
+                <div class="menu">Recomendamos</div>
+                <div class="menu">Contacto</div>
+                <div class="menu">
+                    <div class="buscar">
+                        <input type="search" placeholder="Buscar ...">
+                        <img src="img/buscar.png" class="Imgbuscar">
+                    </div>
+                </div>
+                <div class="menu">
+                    <div class="carrito">
+                        <div><img src="img/carrito.png" class="Imgcarrito"></div>
+                        <div>
+                            <p>Total</p>
+                            <p>0.0 Bs</p>
+                        </div>
+                        <div><img src="img/flecha.png" class="flecha"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <article class="article" id="book-container">
+            <!-- Los libros se renderizarán aquí -->
+        </article>
+    </div>
+
+    <script>
+        // Función para renderizar los libros desde el endpoint
+        function renderBooks() {
+            fetch('/books')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('book-container');
+                    container.innerHTML = '';  // Limpiamos el contenedor antes de renderizar
+
+                    data.forEach(book => {
+                        const bookElement = document.createElement('div');
+                        bookElement.classList.add('filaLibros');
+
+                        // Verificar si el stock está definido y mostrarlo solo si existe
+                        const stockInfo = book.stock !== undefined ? `<p>Stock: ${book.stock}</p>` : '';
+
+                        bookElement.innerHTML = `
+                            <img style="height: auto;width: 150px; border-radius: 12px;" src="${book.cover_image}" alt="${book.title}" class="libro">
+                            <div>
+                                <p><strong>${book.title}</strong></p>
+                                ${stockInfo}
+                                <button type="button" style="background-color: red;" class="botonEliminar" onclick="deleteBook(${book.id})">Eliminar</button>
+                                <button type="button" style="background-color: rgb(91, 91, 253);" class="botonActualizar" onclick="updateBook(${book.id})">Actualizar</button>
+                            </div>
+                        `;
+                        container.appendChild(bookElement);
+                    });
+                })
+                .catch(error => console.error('Error al obtener libros:', error));
+        }
+
+        // Función para eliminar un libro
+        function deleteBook(bookId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este libro?')) {
+                fetch(`/books/${bookId}`, {
+                    method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Libro eliminado exitosamente');
+                        renderBooks(); // Volver a renderizar los libros después de eliminar
+                    } else {
+                        alert('Error al eliminar el libro');
+                    }
+                })
+                .catch(error => console.error('Error al eliminar el libro:', error));
+            }
+        }
+
+        // Función para actualizar el libro (actualización de título y stock)
+        function updateBook(bookId) {
+            const newTitle = prompt("Introduce el nuevo título del libro:");
+            const newStock = prompt("Introduce la nueva cantidad de stock:");
+            if (newTitle && newStock) {
+                fetch(`/books/${bookId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title: newTitle, stock: parseInt(newStock) })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Libro actualizado exitosamente');
+                        renderBooks(); // Volver a renderizar los libros después de actualizar
+                    } else {
+                        alert('Error al actualizar el libro');
+                    }
+                })
+                .catch(error => console.error('Error al actualizar el libro:', error));
+            }
+        }
+        window.onload = function() {
+            renderBooks();
+        };
+    </script>
+</body>
+</html>

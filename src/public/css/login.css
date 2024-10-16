@@ -1,0 +1,86 @@
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-image: url(/img/portadaLogin.jpeg); /* Ruta de la imagen de fondo */
+    background-size: cover; /* Cubre todo el contenedor */
+    background-position: center; /* Centra la imagen */
+    height: 100vh; /* Asegura que el body cubra toda la altura de la ventana */
+    margin: 0; /* Elimina el margen por defecto */
+    display: flex; /* Utiliza flexbox para centrar el contenido */
+}
+
+.contenedor{
+    height: 70vh;
+    width: 30%;
+    display: flex;
+    margin: auto;
+    border: rgb(85, 82, 82) 4px solid;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px 5px rgb(47, 46, 46);
+    border-radius: 10px;
+}
+
+#loginForm{
+    width: 100%;
+    font-size: 15px;
+    background-color:rgb(210, 206, 169);
+    height: 80%;
+    align-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+    background: transparent;
+}
+
+.titulo{
+    font-size: 20px;
+    margin-bottom: 20px;
+    margin: 25px auto;
+    color: white;
+}
+
+.inputs{
+    width: 100%;
+    margin-bottom: 7px;
+
+}
+
+#username, #password {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 2px solid rgb( 255 , 255 , 255 , .2);
+    border-radius: 40px;
+    color: white;
+    background-color: transparent;
+    padding: 15px;
+    outline: none; /* Quita el borde de enfoque predeterminado */
+}
+
+#username::placeholder, #password::placeholder{
+    color:white;
+}
+
+
+.contenedorBoton{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.botonEnviar{
+    background-color: rgb(99, 99, 254);
+    color: white;
+    font-size: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 20px;
+    width: 20%;
+    border: none;
+}
+
+
