@@ -1,23 +1,39 @@
-import { INTEGER } from 'sequelize';
 import { conectDB } from '../config/conectDB';
 import { UserModel } from '../models/UserModel';
-import { promises } from 'dns';
 
 
 export class UserRepository {
     static async createUser(user: UserModel): Promise<UserModel> {
-        const sql = `NSERT INTO USERS (Avatar, FullName, username, email, password, Gender) VALUES (${user.avatar}, ${user.FullName}, ${user.username}, ${user.email}, ${user.password}`;
-        const result = await conectDB.execute(sql);
+        const defaultAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
+        const avatar = user.avatar || defaultAvatar;
 
-        if (!result.rows || result.rows.length === 0) {
-            throw new Error('No se pudo crear el usuario');
+        const sql = `INSERT INTO USERS (FullName, username, email, password, Gender, avatar) VALUES (${user.avatar}, ${user.FullName}, ${user.username}, ${user.email}, ${user.password}, ${avatar} RETURNING id,Avatar, FullName, username, email, password, UserRole,create_at, status, Gender`;
+        
+        try{
+            const result = await conectDB.execute(sql);
+            if(result.rows.length === 0){
+                throw new Error('No se puede crear usuario');
+            }
+            const createdUser = result.rows[0];
+            return new UserModel(
+                String(createdUser.FullName),
+                String(createdUser.username),
+                String(createdUser.email),
+                String(createdUser.password),
+                String(createdUser.gender),
+                String(createdUser.UserRole),
+                createdUser.createAt ? new Date() : undefined,
+                String(createdUser.status) ?? '',
+                Number(createdUser.id),
+                String(createdUser.avatar),
+            );
+        }catch(error){
+            console.error('error al crear usuario:', error);
+            throw new Error ('Error al crear usuario');
         }
-
-        // const id = result.rows[0].id;
-        return new UserModel(user.FullName, user.username, user.email, user.password, user.gender, user.avatar, user.createdAt, user.status);
     }
 
-    static async getUserByUsername(username: string): Promise<UserModel | null> {
+    /*static async getUserByUsername(username: string): Promise<UserModel | null> {
         const sql = `SELECT * FROM users WHERE username = ${username}`;
         const result = await conectDB.execute(sql);
     
@@ -39,7 +55,6 @@ export class UserRepository {
             String(row.avatar) ?? ''
         );
     }
-    
 
     static async getAllUsers(): Promise<UserModel[]> {
         const sql = 'SELECT * FROM users';
@@ -60,6 +75,7 @@ export class UserRepository {
             String(row.avatar) ?? ''
         ));
     }
+    
     static async updatePassword(username: string, password:string): Promise<string> {
         const sql = `UPDATE users SET password = ${password} WHERE username = ${username}`;
         const result = await conectDB.execute(sql);
@@ -99,5 +115,5 @@ export class UserRepository {
             parseInt(String(row.id)) ?? 0,
             String(row.avatar) ?? ''
         );
-    }
+    }*/
 }

@@ -1,17 +1,18 @@
-const UserService = require('../services/UserService');
+import { Request, Response } from "express";
+import { UserService } from "../services/UserService";
 
-class UserController {
-    static async create(req, res) {
-        const { names, username, email, password } = req.body;
+export class UserController {
+    static async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const result = await UserService.createUser(names, username, email, password);
-            res.status(201).json(result);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
+            const { FullName,username,email,password,gender,avatar } = req.body;
+            const newUser = await UserService.createUser(FullName,username,email,password, gender, avatar);
+            res.status(201).json({user: newUser});
+        } catch (error: any) {
+            res.status(400).json({message: error});
         }
     }
 
-    static async getbyUsername(req, res) {
+    /*static async getbyUsername(req, res) {
         const { username } = req.params;
 
         try {
@@ -82,7 +83,5 @@ class UserController {
             }
             res.json({ success: true, message: 'Sesión cerrada exitosamente' });
         });
-    }
+    }*/
 }
-
-module.exports = UserController;
