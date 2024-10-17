@@ -7,13 +7,13 @@ export class UserRepository {
         const defaultAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
         const avatar = user.avatar || defaultAvatar;
 
-        const sql = `INSERT INTO USERS (FullName, username, email, password, Gender, avatar) VALUES (${user.avatar}, ${user.FullName}, ${user.username}, ${user.email}, ${user.password}, ${avatar} RETURNING id,Avatar, FullName, username, email, password, UserRole,create_at, status, Gender`;
+        const sql = `INSERT INTO USERS (FullName, username, email, password, Gender, Avatar) VALUES ('${user.avatar}', '${user.FullName}', '${user.username}', '${user.email}', '${user.password}', '${avatar}')`;
         
         try{
             const result = await conectDB.execute(sql);
-            if(result.rows.length === 0){
+            /*if(result.rows.length === 0){
                 throw new Error('No se puede crear usuario');
-            }
+            }*/
             const createdUser = result.rows[0];
             return new UserModel(
                 String(createdUser.FullName),

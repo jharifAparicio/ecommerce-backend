@@ -8,7 +8,7 @@ export class UserController {
             const newUser = await UserService.createUser(FullName,username,email,password, gender, avatar);
             res.status(201).json({user: newUser});
         } catch (error: any) {
-            res.status(400).json({message: error});
+            res.status(400).json({message: error.message});
         }
     }
 
