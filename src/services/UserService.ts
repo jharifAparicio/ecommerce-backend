@@ -38,13 +38,13 @@ export class UserService {
 
     /*static async getUserByUsername(username) {
         return await UserRepository.getUserByUsername(username);
-    }
+    }*/
 
     static async getAllUser() {
         return await UserRepository.getAllUsers();
     }
 
-    static async updatePassword(username, password) {
+    /*static async updatePassword(username, password) {
         return await UserRepository.updatePassword(username, password);
     }
 

@@ -9,7 +9,8 @@ if (!TursoUrl || !TursoAuthToken) {
     throw new Error('fatal: TursoUrl o TursoAuthToken no definidos');
 }
 
-export const conectDB = createClient({
+export const turso = createClient({
     url: TursoUrl,
     authToken: TursoAuthToken,
 });
+

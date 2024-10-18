@@ -8,7 +8,7 @@ export class UserController {
             const newUser = await UserService.createUser(FullName,username,email,password, gender, avatar);
             res.status(201).json({user: newUser});
         } catch (error: any) {
-            res.status(400).json({message: error.message});
+            res.status(400).json({message: "Error al crear el usuario controller"});
         }
     }
 
@@ -24,18 +24,20 @@ export class UserController {
         }catch (error) {
             res.status(500).json({ error: error.message });
         }
-    }
+    }*/
 
-    static async getAllUser(req, res) {
+    static async getAllUser(req: Request, res: Response): Promise<void> {
         try{
             const users = await UserService.getAllUser();
             res.json(users);
         }catch(error){
-            res.status(500).json({ error: error.message });
+            res.status(400).json({ 
+                message: "Error al obtener los usuarios controller"
+            });
         }
     }
 
-    static async updatePassword(req, res) {
+    /*static async updatePassword(req, res) {
         const { username } = req.params;
         const { newPassword } = req.body;
 
