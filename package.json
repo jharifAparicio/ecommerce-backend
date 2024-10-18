@@ -3,8 +3,15 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "build": "npx tsc",
-  "dev": "nodemon --watch src --exec \"npx tsc && node dist/index.js\""
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean"
   },
   "keywords": [],
   "author": "",
@@ -19,9 +26,17 @@
     "sqlite3": "5.1.7"
   },
   "devDependencies": {
+    "@eslint/js": "9.13.0",
     "@types/express": "5.0.0",
     "@types/node": "22.7.5",
+    "@typescript-eslint/eslint-plugin": "8.10.0",
+    "@typescript-eslint/parser": "8.10.0",
+    "eslint": "9.13.0",
+    "eslint-config-prettier": "9.1.0",
+    "globals": "15.11.0",
     "nodemon": "3.1.4",
-    "typescript": "5.6.3"
+    "ts-node-dev": "2.0.0",
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.10.0"
   }
 }
