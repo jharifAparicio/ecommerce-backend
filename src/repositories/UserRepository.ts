@@ -28,40 +28,44 @@ export class UserRepository {
                 String(createdUser.username),
                 String(createdUser.email),
                 String(createdUser.password),
-                String(createdUser.gender),
+                String(createdUser.Gender),
                 String(createdUser.UserRole),
-                createdUser.createAt ? new Date() : undefined,
+                createdUser.create_At ? new Date() : undefined,
                 String(createdUser.status) ?? '',
-                Number(createdUser.id),
-                String(createdUser.avatar),
+                Number(createdUser.Id),
+                String(createdUser.Avatar),
             );
         }catch(error){
             console.error('error al crear usuario: repository', error);
             throw new Error ('Error al crear usuario repository');
         }
     }
-    /*static async getUserByUsername(username: string): Promise<UserModel | null> {
-        const sql = `SELECT * FROM users WHERE username = ${username}`;
-        const result = await conectDB.execute(sql);
-    
+    static async getUserByUsername(username: string): Promise<UserModel | null> {
+        const sql = "SELECT * FROM users WHERE username = :username";
+        const result = await turso.execute({
+            sql,
+            args: { username },
+        });
+
         if (!result.rows || result.rows.length === 0) {
             return null;
+        }else{
+            const getUser = result.rows[0];
+            return new UserModel(
+                String(getUser.FullName),
+                String(getUser.username),
+                String(getUser.email),
+                String(getUser.password),
+                String(getUser.Gender),
+                String(getUser.UserRole),
+                getUser.create_At ? new Date() : undefined,
+                String(getUser.status) ?? '',
+                Number(getUser.Id),
+                String(getUser.Avatar),
+            );
         }
-    
-        const row = result.rows[0];
-        return new UserModel(
-            String(row.FullName),
-            String(row.username),
-            String(row.email),
-            String(row.password),
-            String(row.gender),
-            String(row.UserRole) ?? '', 
-            new Date(String(row.createdAt)) ?? undefined,
-            String(row.status) ?? '',
-            parseInt(String(row.id)) ?? 0,
-            String(row.avatar) ?? ''
-        );
-    }*/
+    }
+
     static async getAllUsers(): Promise<UserModel[]> {
         const sql = 'SELECT * FROM USERS';
         const result = await turso.execute(sql);

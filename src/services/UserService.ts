@@ -2,7 +2,6 @@ import { UserRepository } from '../repositories/UserRepository';
 import { UserModel } from '../models/UserModel';
 
 export class UserService {
-
     static async createUser(
         FullName: string,
         username: string,
@@ -35,15 +34,12 @@ export class UserService {
         //retornamos el usuario creado
         return createdUser;
     }
-
-    /*static async getUserByUsername(username) {
+    static async getUserByUsername(username: string): Promise<UserModel | null> {
         return await UserRepository.getUserByUsername(username);
-    }*/
-
+    }
     static async getAllUser() {
         return await UserRepository.getAllUsers();
     }
-
     /*static async updatePassword(username, password) {
         return await UserRepository.updatePassword(username, password);
     }

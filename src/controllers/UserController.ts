@@ -4,35 +4,36 @@ import { UserService } from "../services/UserService";
 export class UserController {
     static async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const { FullName,username,email,password,gender,avatar } = req.body;
-            const newUser = await UserService.createUser(FullName,username,email,password, gender, avatar);
-            res.status(201).json({user: newUser});
-        } catch (error: any) {
-            res.status(400).json({message: "Error al crear el usuario controller"});
+            const { FullName, username, email, password, gender, avatar } = req.body;
+            const newUser = await UserService.createUser(FullName, username, email, password, gender, avatar);
+            res.status(201).json({ user: newUser });
+        } catch (error) {
+            res.status(400).json({
+                message: "Error al crear el usuario controller" + error
+            });
         }
     }
 
-    /*static async getbyUsername(req, res) {
-        const { username } = req.params;
+    static async getbyUsername(req: Request, res: Response): Promise<void> {
+        const username = req.params.username;
 
         try {
             const user = await UserService.getUserByUsername(username);
-            if (!user) {
-                return res.status(404).json({ error: 'Usuario no encontrado' });
-            }
-            res.json(user);
-        }catch (error) {
-            res.status(500).json({ error: error.message });
+            if (user) res.status(200).json(user); res.status(404).json({ message: 'Usuario no encontrado' });
+        } catch (error) {
+            res.status(500).json({
+                message: "Error al obtener el usuario controller -> " + error,
+            });
         }
-    }*/
+    }
 
     static async getAllUser(req: Request, res: Response): Promise<void> {
-        try{
+        try {
             const users = await UserService.getAllUser();
             res.json(users);
-        }catch(error){
-            res.status(400).json({ 
-                message: "Error al obtener los usuarios controller"
+        } catch (error) {
+            res.status(400).json({
+                message: "Error al obtener los usuarios controller -> " + error
             });
         }
     }
