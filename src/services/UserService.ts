@@ -7,15 +7,14 @@ export class UserService {
         username: string,
         email: string,
         password: string,
-        gender: string,
-        avatar?: string
+        gender: string
     )
     {
         if (!FullName || !username || !email || !password || !gender) {
             throw new Error('Todos los campos son obligatorios');
         }
 
-        const newAvatar = avatar  ?? 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
+        const newAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
 
         const User = new UserModel(
             FullName,
@@ -44,11 +43,15 @@ export class UserService {
         return await UserRepository.updateDataUser(username, updatedData);
     }
 
-    /*static async deleteUser(username) {
-        return await UserRepository.deleteUser(username);
+    static async deleteByUsername(username: string): Promise<void> {
+        try{
+        await UserRepository.deleteByUsername(username);
+        }catch (error) {
+            throw new Error(`Error al eliminar el usuario: ${error}`);
+        }
     }
 
-    static async login(username, password) {
+    /* static async login(username, password) {
         if (!username || !password) {
             throw new Error('Usuario y contraseña son requeridos');
         }

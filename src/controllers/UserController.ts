@@ -5,8 +5,8 @@ import { UserModel } from "models/UserModel";
 export class UserController {
     static async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const { FullName, username, email, password, gender, avatar } = req.body;
-            const newUser = await UserService.createUser(FullName, username, email, password, gender, avatar);
+            const { FullName, username, email, password, gender } = req.body;
+            const newUser = await UserService.createUser(FullName, username, email, password, gender);
             res.status(201).json({ user: newUser });
         } catch (error) {
             res.status(400).json({
@@ -54,18 +54,20 @@ export class UserController {
         }
     }
 
-    /*static async deleteUser(req, res) {
+    static async deleteByUsername(req: Request, res:Response): Promise<void> {
         const { username } = req.params;
 
         try {
-            const result = await UserService.deleteUser(username);
+            const result = await UserService.deleteByUsername(username);
             res.json(result);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ 
+                message: "Error al eliminar el usuario -> "+ error 
+            });
         }
     }
 
-    static async login(req, res) {
+    /*static async login(req, res) {
         console.log('Login attempt:', req.body);
         const { username, password } = req.body;
         try {

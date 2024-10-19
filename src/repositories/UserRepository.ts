@@ -120,17 +120,27 @@ export class UserRepository {
         }
     }
 
-    /* static async deleteUser(username: string): Promise<string> {
-        const sql = `DELETE FROM users WHERE username = ${username}`;
-        const result = await conectDB.execute(sql);
-        if (result.rows.length === 0) {
-            throw new Error('no existe el usuario');
-        }else{
-            return 'Usuario:  eliminado satisfactoriamente';
+    static async deleteByUsername(username: string): Promise<string> {
+        const deleteUser = "DELETE FROM USERS WHERE username = :UserName";
+        try{
+            const result = await turso.execute({
+                sql: deleteUser,
+                args:{
+                    UserName: username
+                }
+            });
+            if (result.rows.length === 0) {
+                throw new Error('no existe el usuario');
+            }else{
+                return `Usuario ${username} eliminado satisfactoriamente`;
+            }
+        }catch(error){
+            console.error('error al eliminar usuario: repository', error);
+            throw new Error ('Error al eliminar usuario repository');
         }
     }
 
-    static async login(username: string, password: string): Promise<UserModel | null> {
+    /* static async login(username: string, password: string): Promise<UserModel | null> {
         const sql = `SELECT * FROM users WHERE username = ${username} AND password = ${password}`;
         const result = await conectDB.execute(sql);
         if (!result.rows || result.rows.length === 0) {
