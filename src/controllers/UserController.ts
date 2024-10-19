@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
+import { UserModel } from "models/UserModel";
 
 export class UserController {
     static async createUser(req: Request, res: Response): Promise<void> {
@@ -38,23 +39,22 @@ export class UserController {
         }
     }
 
-    /*static async updatePassword(req, res) {
+    static async updatePassword(req:Request, res:Response): Promise<void> {
         const { username } = req.params;
-        const { newPassword } = req.body;
-
-        if (!newPassword) {
-            return res.status(400).json({ error: 'La nueva contraseña es requerida' });
-        }
+        const updatedData: Partial<UserModel> = req.body;
 
         try {
-            const result = await UserService.updatePassword(username, newPassword);
-            res.json(result);
+            const updatedUser = await UserService.updatedData(username, updatedData);
+            if (updatedUser) res.status(200).json(updatedUser);
+            res.status(404).json({ message: 'Usuario no encontrado' });
         } catch (error) {
-            res.status(500).json({ error: error.message});
+            res.status(500).json({ 
+                message: "Error al actualizar el usuario controller -> " + error,
+            });
         }
     }
 
-    static async deleteUser(req, res) {
+    /*static async deleteUser(req, res) {
         const { username } = req.params;
 
         try {

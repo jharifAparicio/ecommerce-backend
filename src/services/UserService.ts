@@ -40,11 +40,11 @@ export class UserService {
     static async getAllUser() {
         return await UserRepository.getAllUsers();
     }
-    /*static async updatePassword(username, password) {
-        return await UserRepository.updatePassword(username, password);
+    static async updatedData(username: string, updatedData: Partial<UserModel>): Promise<UserModel | null> {
+        return await UserRepository.updateDataUser(username, updatedData);
     }
 
-    static async deleteUser(username) {
+    /*static async deleteUser(username) {
         return await UserRepository.deleteUser(username);
     }
 

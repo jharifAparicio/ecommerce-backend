@@ -7,11 +7,11 @@ export class UserRepository {
         const defaultAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
         const NewAvatar = user.avatar || defaultAvatar;
 
-        const consult = 'INSERT INTO USERS (Avatar, FullName, username, email, password, Gender) VALUES (:avatar, :name, :username, :email, :password, :gender) RETURNING *';
+        const newUser = 'INSERT INTO USERS (Avatar, FullName, username, email, password, Gender) VALUES (:avatar, :name, :username, :email, :password, :gender) RETURNING *';
         
         try{
             const result = await turso.execute({
-                sql: consult,
+                sql: newUser,
                 args: {
                     avatar: NewAvatar,
                     name: user.FullName,
@@ -41,9 +41,9 @@ export class UserRepository {
         }
     }
     static async getUserByUsername(username: string): Promise<UserModel | null> {
-        const sql = "SELECT * FROM users WHERE username = :username";
+        const buscar = "SELECT * FROM USERS WHERE username = :username";
         const result = await turso.execute({
-            sql,
+            sql: buscar,
             args: { username },
         });
 
@@ -67,8 +67,8 @@ export class UserRepository {
     }
 
     static async getAllUsers(): Promise<UserModel[]> {
-        const sql = 'SELECT * FROM USERS';
-        const result = await turso.execute(sql);
+        const searchUsers = 'SELECT * FROM USERS';
+        const result = await turso.execute(searchUsers);
         if (!result.rows || result.rows.length === 0) return [];
         return result.rows.map(row => new UserModel(
             row.FullName ? String(row.FullName):"",
@@ -84,17 +84,43 @@ export class UserRepository {
         ));
     }
     
-    /*static async updatePassword(username: string, password:string): Promise<string> {
-        const sql = `UPDATE users SET password = ${password} WHERE username = ${username}`;
-        const result = await conectDB.execute(sql);
-        if (!result.rows || result.rows.length === 0) {
-            throw new Error('No se pudo actualizar la contraseña');
-        }else{
-            return 'Contraseña actualizada satisfactoriamente';
+    static async updateDataUser(username: string, updatedData: Partial<UserModel>): Promise<UserModel | null> {
+        const { FullName, email, password, avatar, gender } = updatedData;
+        const editUser = 'UPDATE users SET Avatar = COALESCE(:NewAvatar, Avatar), FullName = COALESCE(:NewFullNames, FullName), email = COALESCE(:NewEmail, email), password = COALESCE(:NewPassword, password), Gender = COALESCE(:NewGender, Gender) WHERE username = :Username RETURNING *;';
+        
+        try{
+            const updatedUser = await turso.execute({
+                sql: editUser,
+                args: {
+                    NewAvatar : avatar ?? null,
+                    NewFullNames: FullName ?? null,
+                    NewEmail :email ?? null,
+                    NewPassword : password ?? null,
+                    NewGender : gender ?? null,
+                    Username : username
+                },
+            });
+            if (!updatedUser.rows || updatedUser.rows.length === 0) return null;
+            const userUpdated = updatedUser.rows[0];
+            return new UserModel(
+                String(userUpdated.FullName),
+                String(userUpdated.username),
+                String(userUpdated.email),
+                String(userUpdated.password),
+                String(userUpdated.Gender),
+                String(userUpdated.UserRole),
+                userUpdated.create_At ? new Date() : undefined,
+                String(userUpdated.status),
+                Number(userUpdated.Id),
+                String(userUpdated.Avatar)
+            );
+        }catch(error){
+            console.error('error al actualizar usuario: repository', error);
+            throw new Error ('Error al actualizar usuario repository');
         }
     }
 
-    static async deleteUser(username: string): Promise<string> {
+    /* static async deleteUser(username: string): Promise<string> {
         const sql = `DELETE FROM users WHERE username = ${username}`;
         const result = await conectDB.execute(sql);
         if (result.rows.length === 0) {
