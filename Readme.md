@@ -10,6 +10,10 @@
 ```console
 $ npm install
 ```
+## 2. copiar y configurar .env
+``` console
+$ cp .env.example .env
+```
 
 ## 2. compiar TypScript ( si es nesesario)
 
