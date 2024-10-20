@@ -26,3 +26,7 @@ $ npx tsc
 ```console
 $ npm run dev
 ```
+
+## 4. el backend se desplego en:
+
+el backend se desplego en railway
