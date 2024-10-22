@@ -2,6 +2,11 @@ import bcrypt from "bcrypt";
 import { UserRepository } from '../repositories/UserRepository';
 import { UserModel } from '../models/UserModel';
 
+function encriptar(password: string): string {
+    const salt = bcrypt.genSaltSync(10);
+    return bcrypt.hashSync(password, salt);
+};
+
 export class UserService {
     static async createUser(
         name: string,
@@ -15,11 +20,8 @@ export class UserService {
         if (!name || !lastname || !username || !email || !password || !gender) {
             throw new Error('Todos los campos son obligatorios');
         }
-
+        const hash = encriptar(password);
         const newAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
-
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(password, salt);
 
         const User = new UserModel(
             name,
@@ -46,6 +48,10 @@ export class UserService {
         return await UserRepository.getAllUsers();
     }
     static async updatedData(username: string, updatedData: Partial<UserModel>): Promise<UserModel | null> {
+        // actualizar la contraseña
+        if (updatedData.password) {
+            updatedData.password = encriptar(updatedData.password);
+        }
         return await UserRepository.updateDataUser(username, updatedData);
     }
 
@@ -57,21 +63,16 @@ export class UserService {
         }
     }
 
-    /* static async login(username, password) {
-        if (!username || !password) {
-            throw new Error('Usuario y contraseña son requeridos');
-        }
-    
+    static async Login(username: string, password: string): Promise<UserModel | null> {
         const user = await UserRepository.getUserByUsername(username);
-        if (!user || user.password !== password) {
-            throw new Error('Credenciales incorrectas');
+        if (!user) {
+            throw new Error('Usuario no encontrado');
         }
-    
-        return {
-            id: user.id,
-            names: user.names,
-            username: user.username,
-            email: user.email
-        };
-    }*/
+        const passwordMatch = bcrypt.compareSync(password, user.password);
+        if (!passwordMatch) {
+            throw new Error('Contraseña incorrecta');
+        }else{
+            return user;
+        }
+    }
 }

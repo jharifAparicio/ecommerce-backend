@@ -43,14 +43,17 @@ export class UserController {
         }
     }
 
-    static async updatePassword(req: Request, res: Response): Promise<void> {
+    static async UpdateData(req: Request, res: Response): Promise<void> {
         const { username } = req.params;
         const updatedData: Partial<UserModel> = req.body;
 
         try {
             const updatedUser = await UserService.updatedData(username, updatedData);
-            if (updatedUser) res.status(200).json(updatedUser);
+            if (updatedUser) {
+                res.status(200).json(updatedUser);
+            }else{
             res.status(404).json({ message: 'Usuario no encontrado' });
+            }
         } catch (error) {
             res.status(500).json({
                 message: "Error al actualizar el usuario controller -> " + error,
@@ -71,26 +74,16 @@ export class UserController {
         }
     }
 
-    /*static async login(req, res) {
-        console.log('Login attempt:', req.body);
+    static async Login(req: Request, res: Response): Promise<void> {
         const { username, password } = req.body;
-        try {
-            const user = await UserService.login(username, password);
-            req.session.user = user;
-            req.session.loggedin = true;
-            console.log('Session after login:', req.session);  // Verificar la sesión
-            res.json({ success: true, message: 'Login exitoso', redirectUrl: '/libros' });
-        } catch (error) {
-            res.status(401).json({ success: false, error: 'Credenciales incorrectas' });
-        }
-    }    
 
-    static logout(req, res) {
-        req.session.destroy((err) => {
-            if(err) {
-                return res.status(500).json({ success: false, error: 'Error al cerrar sesión' });
-            }
-            res.json({ success: true, message: 'Sesión cerrada exitosamente' });
-        });
-    }*/
+        try {
+            const user = await UserService.Login(username, password);
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(404).json({
+                message: "Error al hacer login -> " + error
+            });
+        }
+    }
 }

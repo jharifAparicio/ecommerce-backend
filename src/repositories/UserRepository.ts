@@ -74,7 +74,7 @@ export class UserRepository {
                 String(getUser.Gender),
                 String(getUser.UserRole),
                 getUser.createAt ? new Date() : undefined,
-                String(getUser.Status) ?? '',
+                String(getUser.Status_User) ?? '',
                 Number(getUser.Id),
                 String(getUser.Avatar),
             );
@@ -101,7 +101,7 @@ export class UserRepository {
     }
 
     static async updateDataUser(username: string, updatedData: Partial<UserModel>): Promise<UserModel | null> {
-        const { name, email, password, avatar, gender } = updatedData;
+        const { name,lastname, email, password, avatar, gender } = updatedData;
         const editUser = 'UPDATE USERS SET Avatar = COALESCE(:NewAvatar, Avatar), Nombres = COALESCE(:nombres, Nombres), Apellidos = COALESCE(:apellidos, Apellidos), email = COALESCE(:NewEmail, email), Password = COALESCE(:NewPassword, Password), Gender = COALESCE(:NewGender, Gender) WHERE UserName = :Username RETURNING *;';
 
         try {
@@ -109,7 +109,8 @@ export class UserRepository {
                 sql: editUser,
                 args: {
                     NewAvatar: avatar ?? null,
-                    NewFullNames: name ?? null,
+                    nombres: name ?? null,
+                    apellidos: lastname ?? null,
                     NewEmail: email ?? null,
                     NewPassword: password ?? null,
                     NewGender: gender ?? null,
@@ -121,13 +122,13 @@ export class UserRepository {
             return new UserModel(
                 String(userUpdated.Nombres),
                 String(userUpdated.Apellidos),
-                String(userUpdated.username),
+                String(userUpdated.UserName),
                 String(userUpdated.email),
-                String(userUpdated.password),
+                String(userUpdated.Password),
                 String(userUpdated.Gender),
                 String(userUpdated.UserRole),
                 userUpdated.create_At ? new Date() : undefined,
-                String(userUpdated.status),
+                String(userUpdated.Status_User) ?? 'active',
                 Number(userUpdated.Id),
                 String(userUpdated.Avatar)
             );
