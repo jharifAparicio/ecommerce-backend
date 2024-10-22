@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
-import { UserModel } from "models/UserModel";
+import { UserModel } from "../models/UserModel";
 
 export class UserController {
     static async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const { FullName, username, email, password, gender } = req.body;
-            const newUser = await UserService.createUser(FullName, username, email, password, gender);
+            const { Name, Lastname, username, email, password, gender } = req.body;
+            const newUser = await UserService.createUser(Name, Lastname, username, email, password, gender);
             res.status(201).json({ user: newUser });
         } catch (error) {
             res.status(400).json({
@@ -20,7 +20,11 @@ export class UserController {
 
         try {
             const user = await UserService.getUserByUsername(username);
-            if (user) res.status(200).json(user); res.status(404).json({ message: 'Usuario no encontrado' });
+            if (user) { 
+                res.status(200).json(user); 
+            } else { 
+                res.status(404).json({ message: 'Usuario no encontrado' }); 
+            }
         } catch (error) {
             res.status(500).json({
                 message: "Error al obtener el usuario controller -> " + error,
@@ -39,7 +43,7 @@ export class UserController {
         }
     }
 
-    static async updatePassword(req:Request, res:Response): Promise<void> {
+    static async updatePassword(req: Request, res: Response): Promise<void> {
         const { username } = req.params;
         const updatedData: Partial<UserModel> = req.body;
 
@@ -48,21 +52,21 @@ export class UserController {
             if (updatedUser) res.status(200).json(updatedUser);
             res.status(404).json({ message: 'Usuario no encontrado' });
         } catch (error) {
-            res.status(500).json({ 
+            res.status(500).json({
                 message: "Error al actualizar el usuario controller -> " + error,
             });
         }
     }
 
-    static async deleteByUsername(req: Request, res:Response): Promise<void> {
+    static async deleteByUsername(req: Request, res: Response): Promise<void> {
         const { username } = req.params;
 
         try {
             const result = await UserService.deleteByUsername(username);
             res.json(result);
         } catch (error) {
-            res.status(500).json({ 
-                message: "Error al eliminar el usuario -> "+ error 
+            res.status(500).json({
+                message: "Error al eliminar el usuario -> " + error
             });
         }
     }

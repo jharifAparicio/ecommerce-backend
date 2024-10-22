@@ -1,7 +1,8 @@
 export class UserModel{
     id?: number;
     avatar?: string;
-    FullName: string;
+    name: string;
+    lastname: string;
     username: string;
     email: string;
     password: string;
@@ -10,7 +11,8 @@ export class UserModel{
     status?: string;
     gender: string;
     constructor (
-        FullName: string, 
+        name: string,
+        lastname: string,
         username: string, 
         email: string, 
         password: string,
@@ -23,7 +25,8 @@ export class UserModel{
     ){
         this.id = id;
         this.avatar = avatar;
-        this.FullName = FullName;
+        this.name = name;
+        this.lastname = lastname;
         this.username = username;
         this.email = email;
         this.password = password;

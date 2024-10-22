@@ -7,14 +7,15 @@ export class UserRepository {
         const defaultAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
         const NewAvatar = user.avatar || defaultAvatar;
 
-        const newUser = 'INSERT INTO USERS (Avatar, FullName, username, email, password, Gender) VALUES (:avatar, :name, :username, :email, :password, :gender) RETURNING *';
-        
-        try{
+        const newUser = 'INSERT INTO Users (Avatar, Nombres, Apellidos ,UserName, email, Password, Gender) VALUES (:avatar, :name , :lastname, :username, :email, :password, :gender) RETURNING *';
+
+        try {
             const result = await turso.execute({
                 sql: newUser,
                 args: {
                     avatar: NewAvatar,
-                    name: user.FullName,
+                    name: user.name,
+                    lastname: user.lastname,
                     username: user.username,
                     email: user.email,
                     password: user.password,
@@ -24,20 +25,21 @@ export class UserRepository {
 
             const createdUser = result.rows[0];
             return new UserModel(
-                String(createdUser.FullName),
-                String(createdUser.username),
+                String(createdUser.Nombres),
+                String(createdUser.Apellidos),
+                String(createdUser.UserName),
                 String(createdUser.email),
-                String(createdUser.password),
+                String(createdUser.Password),
                 String(createdUser.Gender),
                 String(createdUser.UserRole),
-                createdUser.create_At ? new Date() : undefined,
-                String(createdUser.status) ?? '',
+                createdUser.CreateAt ? new Date() : undefined,
+                String(createdUser.Status_User) ?? '',
                 Number(createdUser.Id),
                 String(createdUser.Avatar),
             );
-        }catch(error){
+        } catch (error) {
             console.error('error al crear usuario: repository', error);
-            throw new Error ('Error al crear usuario repository');
+            throw new Error('Error al crear usuario repository');
         }
     }
     static async getUserByUsername(username: string): Promise<UserModel | null> {
@@ -48,18 +50,31 @@ export class UserRepository {
         });
 
         if (!result.rows || result.rows.length === 0) {
-            return null;
-        }else{
+            return new UserModel(
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                undefined,
+                "",
+                0,
+                ""
+            );
+        } else {
             const getUser = result.rows[0];
             return new UserModel(
-                String(getUser.FullName),
-                String(getUser.username),
+                String(getUser.Nombres),
+                String(getUser.Apellidos),
+                String(getUser.UserName),
                 String(getUser.email),
-                String(getUser.password),
+                String(getUser.Password),
                 String(getUser.Gender),
                 String(getUser.UserRole),
-                getUser.create_At ? new Date() : undefined,
-                String(getUser.status) ?? '',
+                getUser.createAt ? new Date() : undefined,
+                String(getUser.Status) ?? '',
                 Number(getUser.Id),
                 String(getUser.Avatar),
             );
@@ -70,40 +85,42 @@ export class UserRepository {
         const searchUsers = 'SELECT * FROM USERS';
         const result = await turso.execute(searchUsers);
         if (!result.rows || result.rows.length === 0) return [];
-        return result.rows.map(row => new UserModel(
-            row.FullName ? String(row.FullName):"",
-            row.username ? String(row.username):"",
-            row.email ? String(row.email):"",
-            row.password ? String(row.password): "",
-            row.Gender ? String(row.Gender): "",
-            row.UserRole ? String(row.UserRole): "user", 
-            row.create_at ? new Date(String(row.created_at)): undefined,
-            row.status ? String(row.status): "active",
-            row.Id ? parseInt(String(row.Id)): 0,
-            row.Avatar ? String(row.Avatar): "Avatar no disponible"
-        ));
+        return result.rows.map((row => new UserModel(
+            row.Nombres ? String(row.Nombres) : "",
+            row.Apellidos ? String(row.Apellidos) : "",
+            row.UserName ? String(row.UserName) : "",
+            row.email ? String(row.email) : "",
+            row.Password ? String(row.Password) : "",
+            row.Gender ? String(row.Gender) : "",
+            row.UserRole ? String(row.UserRole) : "",
+            row.create_at ? new Date(String(row.create_at)) : undefined,
+            row.Status_User ? String(row.Status_User) : "",
+            row.Id ? parseInt(String(row.Id)) : 0,
+            row.Avatar ? String(row.Avatar) : "Avatar no disponible"
+        )));
     }
-    
+
     static async updateDataUser(username: string, updatedData: Partial<UserModel>): Promise<UserModel | null> {
-        const { FullName, email, password, avatar, gender } = updatedData;
-        const editUser = 'UPDATE users SET Avatar = COALESCE(:NewAvatar, Avatar), FullName = COALESCE(:NewFullNames, FullName), email = COALESCE(:NewEmail, email), password = COALESCE(:NewPassword, password), Gender = COALESCE(:NewGender, Gender) WHERE username = :Username RETURNING *;';
-        
-        try{
+        const { name, email, password, avatar, gender } = updatedData;
+        const editUser = 'UPDATE USERS SET Avatar = COALESCE(:NewAvatar, Avatar), Nombres = COALESCE(:nombres, Nombres), Apellidos = COALESCE(:apellidos, Apellidos), email = COALESCE(:NewEmail, email), Password = COALESCE(:NewPassword, Password), Gender = COALESCE(:NewGender, Gender) WHERE UserName = :Username RETURNING *;';
+
+        try {
             const updatedUser = await turso.execute({
                 sql: editUser,
                 args: {
-                    NewAvatar : avatar ?? null,
-                    NewFullNames: FullName ?? null,
-                    NewEmail :email ?? null,
-                    NewPassword : password ?? null,
-                    NewGender : gender ?? null,
-                    Username : username
+                    NewAvatar: avatar ?? null,
+                    NewFullNames: name ?? null,
+                    NewEmail: email ?? null,
+                    NewPassword: password ?? null,
+                    NewGender: gender ?? null,
+                    Username: username
                 },
             });
             if (!updatedUser.rows || updatedUser.rows.length === 0) return null;
             const userUpdated = updatedUser.rows[0];
             return new UserModel(
-                String(userUpdated.FullName),
+                String(userUpdated.Nombres),
+                String(userUpdated.Apellidos),
                 String(userUpdated.username),
                 String(userUpdated.email),
                 String(userUpdated.password),
@@ -114,50 +131,29 @@ export class UserRepository {
                 Number(userUpdated.Id),
                 String(userUpdated.Avatar)
             );
-        }catch(error){
+        } catch (error) {
             console.error('error al actualizar usuario: repository', error);
-            throw new Error ('Error al actualizar usuario repository');
+            throw new Error('Error al actualizar usuario repository');
         }
     }
 
     static async deleteByUsername(username: string): Promise<string> {
         const deleteUser = "DELETE FROM USERS WHERE username = :UserName";
-        try{
+        try {
             const result = await turso.execute({
                 sql: deleteUser,
-                args:{
+                args: {
                     UserName: username
                 }
             });
             if (result.rows.length === 0) {
                 throw new Error('no existe el usuario');
-            }else{
+            } else {
                 return `Usuario ${username} eliminado satisfactoriamente`;
             }
-        }catch(error){
+        } catch (error) {
             console.error('error al eliminar usuario: repository', error);
-            throw new Error ('Error al eliminar usuario repository');
+            throw new Error('Error al eliminar usuario repository');
         }
     }
-
-    /* static async login(username: string, password: string): Promise<UserModel | null> {
-        const sql = `SELECT * FROM users WHERE username = ${username} AND password = ${password}`;
-        const result = await conectDB.execute(sql);
-        if (!result.rows || result.rows.length === 0) {
-            return null;
-        }
-        const row = result.rows[0];
-        return new UserModel(
-            String(row.FullName),
-            String(row.username),
-            String(row.email),
-            String(row.password),
-            String(row.gender),
-            String(row.UserRole) ?? '', 
-            new Date(String(row.createdAt)) ?? undefined,
-            String(row.status) ?? '',
-            parseInt(String(row.id)) ?? 0,
-            String(row.avatar) ?? ''
-        );
-    }*/
 }

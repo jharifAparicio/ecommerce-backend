@@ -1,28 +1,34 @@
+import bcrypt from "bcrypt"; 
 import { UserRepository } from '../repositories/UserRepository';
 import { UserModel } from '../models/UserModel';
 
 export class UserService {
     static async createUser(
-        FullName: string,
+        name: string,
+        lastname: string,
         username: string,
         email: string,
         password: string,
         gender: string
     )
     {
-        if (!FullName || !username || !email || !password || !gender) {
+        if (!name || !lastname || !username || !email || !password || !gender) {
             throw new Error('Todos los campos son obligatorios');
         }
 
         const newAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
 
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+
         const User = new UserModel(
-            FullName,
+            name,
+            lastname,
             username,
             email,
-            password,
+            hash,
             gender,
-            undefined, 
+            undefined,
             undefined,
             undefined,
             undefined,
