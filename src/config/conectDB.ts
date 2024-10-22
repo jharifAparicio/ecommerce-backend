@@ -13,4 +13,3 @@ export const turso = createClient({
     url: TursoUrl,
     authToken: TursoAuthToken,
 });
-
