@@ -82,10 +82,10 @@ export class UserController {
             if (result) {
                 res.status(200).json({ token: result.token });
             }else{
-                res.status(404).json({ message: 'Usuario no encontrado' });
+                res.status(401).json({ message: 'Usuario no encontrado' });
             }
         } catch (error) {
-            res.status(404).json({
+            res.status(500).json({
                 message: "Error al hacer login -> " + error
             });
         }
