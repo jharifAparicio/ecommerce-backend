@@ -1,6 +1,9 @@
 import bcrypt from "bcrypt"; 
 import { UserRepository } from '../repositories/UserRepository';
 import { UserModel } from '../models/UserModel';
+import jwt from "jsonwebtoken";
+
+const SECRET_KEY = process.env.JWT_SECRET || 'secret';
 
 function encriptar(password: string): string {
     const salt = bcrypt.genSaltSync(10);
@@ -8,6 +11,10 @@ function encriptar(password: string): string {
 };
 
 export class UserService {
+
+    static generateToken(user: UserModel): string {
+        return jwt.sign({ user }, SECRET_KEY, { expiresIn: '1h' });
+    };
     static async createUser(
         name: string,
         lastname: string,
@@ -63,8 +70,9 @@ export class UserService {
         }
     }
 
-    static async Login(username: string, password: string): Promise<UserModel | null> {
+    static async Login(username: string, password: string): Promise<{token: string } | null> {
         const user = await UserRepository.getUserByUsername(username);
+
         if (!user) {
             throw new Error('Usuario no encontrado');
         }
@@ -72,7 +80,8 @@ export class UserService {
         if (!passwordMatch) {
             throw new Error('Contraseña incorrecta');
         }else{
-            return user;
+            const token = this.generateToken(user);
+            return { token };
         }
     }
 }
