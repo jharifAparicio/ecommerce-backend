@@ -6,9 +6,10 @@ const app = express();
 
 //configuraaciones de CORS
 const corsOptions = {
-    origin: process.env.ORIGIN_CORS,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    "origin": process.env.ORIGIN_CORS,
+    "methods": "GET, POST, PUT, DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 200
 }
 
 app.use(cors(corsOptions));
