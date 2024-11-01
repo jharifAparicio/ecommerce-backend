@@ -1,4 +1,4 @@
-import { turso } from '../config/conectDB';
+import { DataBase } from '../config/turso';
 import { UserModel } from '../models/UserModel';
 
 
@@ -10,7 +10,7 @@ export class UserRepository {
         const newUser = 'INSERT INTO Users (Avatar, Nombres, Apellidos ,UserName, email, Password, Gender) VALUES (:avatar, :name , :lastname, :username, :email, :password, :gender) RETURNING *';
 
         try {
-            const result = await turso.execute({
+            const result = await DataBase.execute({
                 sql: newUser,
                 args: {
                     avatar: NewAvatar,
@@ -44,7 +44,7 @@ export class UserRepository {
     }
     static async getUserByUsername(username: string): Promise<UserModel | null> {
         const buscar = "SELECT * FROM USERS WHERE username = :username";
-        const result = await turso.execute({
+        const result = await DataBase.execute({
             sql: buscar,
             args: { username },
         });
@@ -83,7 +83,7 @@ export class UserRepository {
 
     static async getAllUsers(): Promise<UserModel[]> {
         const searchUsers = 'SELECT * FROM USERS';
-        const result = await turso.execute(searchUsers);
+        const result = await DataBase.execute(searchUsers);
         if (!result.rows || result.rows.length === 0) return [];
         return result.rows.map((row => new UserModel(
             row.Nombres ? String(row.Nombres) : "",
@@ -105,7 +105,7 @@ export class UserRepository {
         const editUser = 'UPDATE USERS SET Avatar = COALESCE(:NewAvatar, Avatar), Nombres = COALESCE(:nombres, Nombres), Apellidos = COALESCE(:apellidos, Apellidos), email = COALESCE(:NewEmail, email), Password = COALESCE(:NewPassword, Password), Gender = COALESCE(:NewGender, Gender) WHERE UserName = :Username RETURNING *;';
 
         try {
-            const updatedUser = await turso.execute({
+            const updatedUser = await DataBase.execute({
                 sql: editUser,
                 args: {
                     NewAvatar: avatar ?? null,
@@ -141,7 +141,7 @@ export class UserRepository {
     static async deleteByUsername(username: string): Promise<string> {
         const deleteUser = "DELETE FROM USERS WHERE username = :UserName";
         try {
-            const result = await turso.execute({
+            const result = await DataBase.execute({
                 sql: deleteUser,
                 args: {
                     UserName: username
