@@ -10,36 +10,26 @@ function encriptar(password: string): string {
 export class UserService {
     static async createUser(
         name: string,
-        lastname: string,
         username: string,
         email: string,
         password: string,
-        gender: string
     )
     {
-        if (!name || !lastname || !username || !email || !password || !gender) {
+        if (!name|| !username || !email || !password) {
             throw new Error('Todos los campos son obligatorios');
         }
         const hash = encriptar(password);
-        const newAvatar = 'https://res.cloudinary.com/dczydmnqc/image/upload/v1729190833/Ecommers/usuarios/temnrpvpik0zptamtdus.jpg';
 
         const User = new UserModel(
             name,
-            lastname,
             username,
             email,
             hash,
-            gender,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            newAvatar
         );
         // llamamos al repositorio para crear el usuario
-        const createdUser = await UserRepository.createUser(User);
+        const UsuarioCreado = await UserRepository.createUser(User);
         //retornamos el usuario creado
-        return createdUser;
+        return UsuarioCreado;
     }
     static async getUserByUsername(username: string): Promise<UserModel | null> {
         return await UserRepository.getUserByUsername(username);
@@ -54,7 +44,6 @@ export class UserService {
         }
         return await UserRepository.updateDataUser(username, updatedData);
     }
-
     static async deleteByUsername(username: string): Promise<void> {
         try{
         await UserRepository.deleteByUsername(username);
@@ -62,7 +51,6 @@ export class UserService {
             throw new Error(`Error al eliminar el usuario: ${error}`);
         }
     }
-
     static async Login(username: string, password: string): Promise<UserModel | null> {
         const user = await UserRepository.getUserByUsername(username);
         if (!user) {
