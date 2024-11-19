@@ -1,5 +1,5 @@
 import express from "express";
-import userRoutes from "./routes/userRoutes";
+import Router from "./routes/Routes";
 import cors from "cors";
 
 const app = express();
@@ -17,7 +17,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 //Rutas de usuario
-app.use('/api', userRoutes);
+app.use('/api', Router);
 
 const PORT = process.env.PORT;
 
