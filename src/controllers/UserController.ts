@@ -5,8 +5,8 @@ import { UserModel } from "../models/UserModel";
 export class UserController {
     static async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const { Name, Lastname, username, email, password, gender } = req.body;
-            const newUser = await UserService.createUser(Name, Lastname, username, email, password, gender);
+            const { name, username, email, password } = req.body;
+            const newUser = await UserService.createUser(name, username, email, password);
             res.status(201).json({ user: newUser });
         } catch (error) {
             res.status(400).json({
@@ -85,8 +85,8 @@ export class UserController {
                 res.status(401).json({ message: 'Usuario no encontrado' });
             }
         } catch (error) {
-            res.status(500).json({
-                message: "Error al hacer login -> " + error
+            res.status(404).json({
+                message: (error as Error).message
             });
         }
     }
