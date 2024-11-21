@@ -14,20 +14,23 @@ CREATE TABLE Books (
     Description TEXT,
     Price DECIMAL(10, 2) NOT NULL,
     Stock INTEGER NOT NULL,
-    ImageUrl TEXT
+    ImageUrl TEXT,
+    Category INTEGER,
+    FOREIGN KEY (Category) REFERENCES Categories(Id)
 );
 
-CREATE TABLE Orders (
+CREATE TABLE Categories (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    UserId INTEGER NOT NULL,
-    OrderDate TEXT DEFAULT (DATETIME('now')),
-    Status TEXT CHECK (Status IN ('pending', 'completed', 'cancelled')) DEFAULT 'pending',
-    TotalAmount DECIMAL(10, 2) NOT NULL
+    Name TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE Cart (
+CREATE TABLE Purchases (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     UserId INTEGER NOT NULL,
     BookId INTEGER NOT NULL,
-    Quantity INTEGER NOT NULL
+    Quantity INTEGER NOT NULL,
+    Total DECIMAL(10, 2) NOT NULL,
+    Date TEXT NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(Id),
+    FOREIGN KEY (BookId) REFERENCES Books(Id)
 );
