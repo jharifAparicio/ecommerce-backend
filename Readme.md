@@ -1,8 +1,6 @@
 ## tecnogias utilizadas
 -> Express(typescript)
 
--> Claudinary(almacenamineto de imagen y otros)
-
 -> turso para la base de datos
 
 ## 1. Instalar Dependecias
@@ -29,4 +27,4 @@ $ npm run dev
 
 ## 4. el backend se desplego en:
 
-el backend se desplego en railway
+el backend se desplego en render
