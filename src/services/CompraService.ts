@@ -1,5 +1,5 @@
-import { CompraRepository } from "repositories/CompraRepository";
-import { CompraModel } from "models/CompraModel";
+import { CompraRepository } from "../repositories/CompraRepository";
+import { CompraModel } from "../models/CompraModel";
 
 export class CompraService {
     static async createCompra(User_Id: number, Book_Id: number, Cantidad: number, Total_amount: number): Promise<CompraModel> {

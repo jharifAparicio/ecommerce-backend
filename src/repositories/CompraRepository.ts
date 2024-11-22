@@ -3,7 +3,7 @@ import { CompraModel } from "../models/CompraModel";
 
 export class CompraRepository {
     static async createCompra(compra: CompraModel): Promise<CompraModel> {
-        const newCompra = 'INSERT INTO Compras (user_id, book_id, Fecha_compra, cantidad, total) VALUES (:user_id, :book_id, :Fecha_compra, :cantidad, :total) RETURNING *';
+        const newCompra = 'INSERT INTO Purchases (UserId, BookId, Quantity, Total) VALUES (:user_id, :book_id, :cantidad, :total) RETURNING *';
         try {
             const result = await DataBase.execute({
                 sql: newCompra,
@@ -17,12 +17,12 @@ export class CompraRepository {
             const createdCompra = result.rows[0];
 
             return new CompraModel(
-                Number(createdCompra.User_id),
-                Number(createdCompra.Book_id),
-                Number(createdCompra.Cantidad),
-                Number(createdCompra.Total_amount),
+                Number(createdCompra.UserId),
+                Number(createdCompra.BookId),
+                Number(createdCompra.Quantity),
+                Number(createdCompra.Total),
                 Number(createdCompra.Id),
-                createdCompra.Fecha_compra ? new Date() : new Date(),
+                createdCompra.Date ? new Date() : new Date(),
             );
         } catch (error) {
             console.error('error al crear compra: repository', error);

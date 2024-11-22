@@ -2,6 +2,7 @@ import { Router } from "express";
 // controladores
 import { UserController } from "../controllers/UserController";
 import { BookController } from "../controllers/BookController";
+import { CompraController } from "../controllers/CompraController";
 // middleware
 import { authenticateToken, authorizeAdmin } from "../middleware/authMiddleware";
 
@@ -32,6 +33,10 @@ router.get('/books', BookController.getAllBooks);
 router.put('/book/:isbn', BookController.updateData);
 // eliminar libro
 router.delete('/book/:isbn', BookController.deleteBook);
+
+// rutas de compras
+//crear compra
+router.post('/compra', CompraController.createCompra);
 
 
 export default router;

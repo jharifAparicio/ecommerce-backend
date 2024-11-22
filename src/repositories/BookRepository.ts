@@ -4,7 +4,7 @@ import { BookModel } from "../models/BookModel";
 //CRUD
 export class BookRepository {
     static async createBook(book: BookModel): Promise<BookModel> {
-        const newBook = 'INSERT INTO Books (Isbn, Title, Author, Description, Price, Stock, ImageUrl) VALUES (:Isbn ,:Title , :Author, :Description, :Price, :Stock, :ImageUrl) RETURNING *';
+        const newBook = 'INSERT INTO Books (ISBN, Title, Author, Description, Price, Stock, ImageUrl, Category) VALUES (:Isbn ,:Title , :Author, :Description, :Price, :Stock, :ImageUrl, :Category) RETURNING *';
         try {
             const result = await DataBase.execute({
                 sql: newBook,
@@ -15,19 +15,22 @@ export class BookRepository {
                     Description: book.description,
                     Price: book.price,
                     Stock: book.stock,
+                    Category: book.categories,
                     ImageUrl: book.imageUrl,
                 },
             });
             const createdBook = result.rows[0];
 
             return new BookModel(
-                String(createdBook.Isbn),
+                String(createdBook.ISBN),
                 String(createdBook.Title),
                 String(createdBook.Author),
                 String(createdBook.Description),
                 Number(createdBook.Price),
                 Number(createdBook.Stock),
-                String(createdBook.ImageUrl)
+                String(createdBook.ImageUrl),
+                Number(createdBook.Category),
+                Number(createdBook.Id)
             );
         } catch (error) {
             console.error('error al crear libro: repository', error);
@@ -44,13 +47,15 @@ export class BookRepository {
         try {
             const getBook = result.rows[0];
             return new BookModel(
-                String(getBook.Isbn),
+                String(getBook.ISBN),
                 String(getBook.Title),
                 String(getBook.Author),
                 String(getBook.Description),
                 Number(getBook.Price),
                 Number(getBook.Stock),
-                String(getBook.ImageUrl)
+                String(getBook.ImageUrl),
+                Number(getBook.Category),
+                Number(getBook.Id)
             );
         }
         catch (error) {
@@ -63,13 +68,15 @@ export class BookRepository {
         const result = await DataBase.execute(searchBooks);
         if (!result.rows || result.rows.length === 0) return [];
         return result.rows.map((row => new BookModel(
-            row.Isbn ? String(row.Isbn) : "",
+            row.ISBN ? String(row.ISBN) : "",
             row.Title ? String(row.Title) : "",
             row.Author ? String(row.Author) : "",
             row.Description ? String(row.Description) : "",
             row.Price ? Number(row.Price) : 0,
             row.Stock ? Number(row.Stock) : 0,
-            row.ImageUrl ? String(row.ImageUrl) : ""
+            row.ImageUrl ? String(row.ImageUrl) : "",
+            row.Category ? Number(row.Category) : 0,
+            row.Id ? Number(row.Id) : 0
         )));
     };
     static async updateBook(isbn: string, updatedData: Partial<BookModel>): Promise<BookModel | null> {
@@ -96,7 +103,9 @@ export class BookRepository {
                 String(bookUpdated.Description),
                 Number(bookUpdated.Price),
                 Number(bookUpdated.Stock),
-                String(bookUpdated.ImageUrl)
+                String(bookUpdated.ImageUrl),
+                Number(bookUpdated.Category),
+                Number(bookUpdated.id)
             );
         } catch (error) {
             console.error('error al editar libro: repository', error);

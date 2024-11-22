@@ -1,4 +1,4 @@
-import { CompraService } from "services/CompraService";
+import { CompraService } from "../services/CompraService";
 import { Request, Response } from "express";
 // import { CompraModel } from "models/CompraModel";
 
