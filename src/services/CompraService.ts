@@ -1,5 +1,6 @@
 import { CompraRepository } from "../repositories/CompraRepository";
 import { CompraModel } from "../models/CompraModel";
+import { AllCompraModel } from "../models/AllCompraModel";
 
 export class CompraService {
     static async createCompra(User_Id: number, Book_Id: number, Cantidad: number, Total_amount: number): Promise<CompraModel> {
@@ -21,7 +22,7 @@ export class CompraService {
         }
     }
 
-    static async getComprasByUserId(userId: number): Promise<CompraModel[]> {
+    static async getComprasByUserId(userId: number): Promise<AllCompraModel[]> {
         return await CompraRepository.getComprasByUserId(userId);
     }
 }

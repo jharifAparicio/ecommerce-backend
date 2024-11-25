@@ -1,6 +1,5 @@
 import { CompraService } from "../services/CompraService";
 import { Request, Response } from "express";
-// import { CompraModel } from "models/CompraModel";
 
 export class CompraController {
     static async createCompra(req: Request, res: Response): Promise<void> {

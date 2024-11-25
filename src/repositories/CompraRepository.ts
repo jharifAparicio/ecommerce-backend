@@ -1,3 +1,4 @@
+import { AllCompraModel } from "../models/AllCompraModel";
 import { DataBase } from "../config/turso";
 import { CompraModel } from "../models/CompraModel";
 import { format } from 'date-fns/format';
@@ -36,8 +37,8 @@ export class CompraRepository {
         }
     }
 
-    static async getComprasByUserId(userId: number): Promise<CompraModel[]> {
-        const query = 'SELECT * FROM Purchases WHERE UserId = :userId';
+    static async getComprasByUserId(userId: number): Promise<AllCompraModel[]> {
+        const query = 'SELECT Title, SUM(Quantity) AS Quantity,SUM(Total) As Total FROM Purchases  INNER JOIN Books ON Books.id = Purchases.BookId WHERE UserId = :userId GROUP BY Title;';
         try {
             const result = await DataBase.execute({
                 sql: query,
@@ -45,13 +46,10 @@ export class CompraRepository {
                     userId,
                 },
             });
-            return result.rows.map(compra => new CompraModel(
-                Number(compra.UserId),
-                Number(compra.BookId),
+            return result.rows.map(compra => new AllCompraModel(
+                String(compra.Title),
                 Number(compra.Quantity),
                 Number(compra.Total),
-                String(compra.Date),
-                Number(compra.Id)
             ));
         } catch (error) {
             console.error('error al obtener compras por usuario: repository', error);
