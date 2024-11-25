@@ -25,14 +25,14 @@ router.post('/login', UserController.Login);
 // rutas de Libros
 //crear libro
 router.post('/book', BookController.createBook);
-// traer libro por ISBN
-router.get('/book/:isbn', BookController.getBookByIsbn);
+// traer libro por Id
+router.get('/book/:id', BookController.getBookById);
 // traer todos los libros
 router.get('/books', BookController.getAllBooks);
 // actualizar libro
-router.put('/book/:isbn', BookController.updateData);
+router.put('/book/:id', BookController.updateData);
 // eliminar libro
-router.delete('/book/:isbn', BookController.deleteBook);
+router.delete('/book/:id', BookController.deleteBook);
 
 // rutas de compras
 // crear compra

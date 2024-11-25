@@ -2,12 +2,11 @@ import { BookRepository } from "../repositories/BookRepository";
 import { BookModel } from "../models/BookModel";
 
 export class BookService {
-    static async createBook(Isbn: string, title: string, author: string, Description: string, Price: number, Stock: number, ImageUrl: string, Category: number): Promise<BookModel> {
+    static async createBook(title: string, author: string, Description: string, Price: number, Stock: number, ImageUrl: string, Category: string): Promise<BookModel> {
         if (!title || !author || !Description || !Price || !Stock || !ImageUrl) {
             throw new Error('Todos los campos son obligatorios');
         }
         const book = new BookModel(
-            Isbn,
             title,
             author,
             Description,
@@ -19,8 +18,9 @@ export class BookService {
         const BookCreated = await BookRepository.createBook(book);
         return BookCreated;
     };
-    static async getBookByIsbn(isbn: string): Promise<BookModel | null> {
-        return await BookRepository.getBookByIsbn(isbn);
+    
+    static async getBookByIsbn(id: number): Promise<BookModel | null> {
+        return await BookRepository.getBookById(id);
     };
     static async getAllBooks() {
         return await BookRepository.getAllBooks();

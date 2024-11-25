@@ -5,8 +5,8 @@ import { BookModel } from "models/BookModel";
 export class BookController {
     static async createBook(req: Request, res: Response): Promise<void> {
         try {
-            const { ISBN, title, author, description, price, stock, imageUrl,Category } = req.body;
-            const newBook = await BookService.createBook(ISBN, title, author, description, price, stock, imageUrl, Category);
+            const {title, author, description, price, stock, imageUrl,Category } = req.body;
+            const newBook = await BookService.createBook(title, author, description, price, stock, imageUrl, Category);
             res.status(201).json({ book: newBook });
         } catch (error) {
             res.status(400).json({
@@ -14,10 +14,10 @@ export class BookController {
             });
         }
     }
-    static async getBookByIsbn(req: Request, res: Response): Promise<void> {
-        const isbn = req.params.isbn;
+    static async getBookById(req: Request, res: Response): Promise<void> {
+        const id = parseInt(req.params.id);
         try {
-            const book = await BookService.getBookByIsbn(isbn);
+            const book = await BookService.getBookByIsbn(id);
             if (book) {
                 res.status(200).json(book);
             } else {

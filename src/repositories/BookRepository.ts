@@ -4,32 +4,30 @@ import { BookModel } from "../models/BookModel";
 //CRUD
 export class BookRepository {
     static async createBook(book: BookModel): Promise<BookModel> {
-        const newBook = 'INSERT INTO Books (ISBN, Title, Author, Description, Price, Stock, ImageUrl, Category) VALUES (:Isbn ,:Title , :Author, :Description, :Price, :Stock, :ImageUrl, :Category) RETURNING *';
+        const newBook = 'INSERT INTO Books (Title, Author, Description, Price, Stock, ImageUrl, Category) VALUES (:Title , :Author, :Description, :Price, :Stock, :ImageUrl, :Category) RETURNING *';
         try {
             const result = await DataBase.execute({
                 sql: newBook,
                 args: {
-                    Isbn: book.ISBN,
                     Title: book.title,
                     Author: book.author,
                     Description: book.description,
                     Price: book.price,
                     Stock: book.stock,
-                    Category: book.Idcategory,
+                    Category: book.category,
                     ImageUrl: book.imageUrl,
                 },
             });
             const createdBook = result.rows[0];
 
             return new BookModel(
-                String(createdBook.ISBN),
                 String(createdBook.Title),
                 String(createdBook.Author),
                 String(createdBook.Description),
                 Number(createdBook.Price),
                 Number(createdBook.Stock),
                 String(createdBook.ImageUrl),
-                Number(createdBook.Category),
+                String(createdBook.Category),
                 Number(createdBook.Id)
             );
         } catch (error) {
@@ -38,25 +36,23 @@ export class BookRepository {
         }
     };
 
-    static async getBookByIsbn(isbn: string): Promise<BookModel | null> {
-        const search = " SELECT * FROM Books INNER JOIN Categories ON Books.Category = Categories.Id WHERE  isbn= :isbn";
+    static async getBookById(id: number): Promise<BookModel | null> {
+        const search = " SELECT * FROM Books WHERE  Id = :id";
         const result = await DataBase.execute({
             sql: search,
-            args: { isbn },
+            args: { id },
         });
         try {
             const getBook = result.rows[0];
             return new BookModel(
-                String(getBook.ISBN),
                 String(getBook.Title),
                 String(getBook.Author),
                 String(getBook.Description),
                 Number(getBook.Price),
                 Number(getBook.Stock),
                 String(getBook.ImageUrl),
-                Number(getBook.Category),
+                String(getBook.Category),
                 Number(getBook.Id),
-                String(getBook.Name)
             );
         }
         catch (error) {
@@ -65,20 +61,18 @@ export class BookRepository {
         }
     }
     static async getAllBooks(): Promise<BookModel[]> {
-        const searchBooks = 'SELECT * FROM Books INNER JOIN Categories ON Books.Category = Categories.Id ';
+        const searchBooks = 'SELECT * FROM Books';
         const result = await DataBase.execute(searchBooks);
         if (!result.rows || result.rows.length === 0) return [];
         return result.rows.map((row => new BookModel(
-            row.ISBN ? String(row.ISBN) : "",
             row.Title ? String(row.Title) : "",
             row.Author ? String(row.Author) : "",
             row.Description ? String(row.Description) : "",
             row.Price ? Number(row.Price) : 0,
             row.Stock ? Number(row.Stock) : 0,
             row.ImageUrl ? String(row.ImageUrl) : "",
-            row.Category ? Number(row.Category) : 0,
-            row.Id ? Number(row.Id) : 0,
-            row.Name ? String(row.Name) : ""
+            row.Category ? String(row.Category) : "",
+            row.Id ? Number(row.Id) : 0
         )));
     };
     static async updateBook(isbn: string, updatedData: Partial<BookModel>): Promise<BookModel | null> {
@@ -99,14 +93,13 @@ export class BookRepository {
             if (updatedBook.rows.length === 0) return null;
             const bookUpdated = updatedBook.rows[0];
             return new BookModel(
-                String(bookUpdated.Isbn),
                 String(bookUpdated.Title),
                 String(bookUpdated.Author),
                 String(bookUpdated.Description),
                 Number(bookUpdated.Price),
                 Number(bookUpdated.Stock),
                 String(bookUpdated.ImageUrl),
-                Number(bookUpdated.Category),
+                String(bookUpdated.Category),
                 Number(bookUpdated.id)
             );
         } catch (error) {
