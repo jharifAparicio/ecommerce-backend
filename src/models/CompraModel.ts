@@ -1,6 +1,6 @@
 export class CompraModel {
     id?: number;
-    Fecha_compra?: Date;
+    Fecha_compra?: string;
     user_id: number;
     book_id: number;
     cantidad: number;
@@ -10,8 +10,8 @@ export class CompraModel {
         book_id: number,
         cantidad: number,
         total: number,
+        Fecha_compra?: string,
         id?: number,
-        Fecha_compra?: Date,
     ) {
         this.id = id;
         this.user_id = user_id;

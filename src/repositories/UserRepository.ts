@@ -51,7 +51,9 @@ export class UserRepository {
                 String(getUser.Name),
                 String(getUser.UserName),
                 String(getUser.Email),
-                String(getUser.Password)
+                String(getUser.Password),
+                "",
+                Number(getUser.Id)
             );
         }
     }

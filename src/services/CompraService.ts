@@ -20,4 +20,8 @@ export class CompraService {
             throw new Error('Error al crear compra service');
         }
     }
+
+    static async getComprasByUserId(userId: number): Promise<CompraModel[]> {
+        return await CompraRepository.getComprasByUserId(userId);
+    }
 }

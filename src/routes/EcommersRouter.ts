@@ -35,8 +35,10 @@ router.put('/book/:isbn', BookController.updateData);
 router.delete('/book/:isbn', BookController.deleteBook);
 
 // rutas de compras
-//crear compra
+// crear compra
 router.post('/compra', CompraController.createCompra);
+// traer compras por usuario
+router.get('/compras/:userId', CompraController.getComprasByUserId);
 
 
 export default router;

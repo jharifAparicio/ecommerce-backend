@@ -6,8 +6,9 @@ export class BookModel {
     description: string;
     price: number;
     stock: number;
-    categories: number;
+    category?: string;
     imageUrl: string;
+    Idcategory: number;
     constructor(
         ISBN: string,
         title: string,
@@ -16,8 +17,9 @@ export class BookModel {
         price: number,
         stock: number,
         imageUrl: string,
-        categories: number,
-        id?: number
+        idcategory: number,
+        id?: number,
+        category?: string,
     ) {
         this.ISBN = ISBN;
         this.id = id;
@@ -26,7 +28,8 @@ export class BookModel {
         this.description = description;
         this.price = price;
         this.stock = stock;
-        this.categories = categories;
+        this.Idcategory = idcategory;
+        this.category = category;
         this.imageUrl = imageUrl
     }
 }

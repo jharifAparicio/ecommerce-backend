@@ -15,7 +15,7 @@ export class BookRepository {
                     Description: book.description,
                     Price: book.price,
                     Stock: book.stock,
-                    Category: book.categories,
+                    Category: book.Idcategory,
                     ImageUrl: book.imageUrl,
                 },
             });
@@ -39,7 +39,7 @@ export class BookRepository {
     };
 
     static async getBookByIsbn(isbn: string): Promise<BookModel | null> {
-        const search = "SELECT * FROM Books WHERE Isbn = :isbn";
+        const search = " SELECT * FROM Books INNER JOIN Categories ON Books.Category = Categories.Id WHERE  isbn= :isbn";
         const result = await DataBase.execute({
             sql: search,
             args: { isbn },
@@ -55,7 +55,8 @@ export class BookRepository {
                 Number(getBook.Stock),
                 String(getBook.ImageUrl),
                 Number(getBook.Category),
-                Number(getBook.Id)
+                Number(getBook.Id),
+                String(getBook.Name)
             );
         }
         catch (error) {
@@ -64,7 +65,7 @@ export class BookRepository {
         }
     }
     static async getAllBooks(): Promise<BookModel[]> {
-        const searchBooks = 'SELECT * FROM Books';
+        const searchBooks = 'SELECT * FROM Books INNER JOIN Categories ON Books.Category = Categories.Id ';
         const result = await DataBase.execute(searchBooks);
         if (!result.rows || result.rows.length === 0) return [];
         return result.rows.map((row => new BookModel(
@@ -76,7 +77,8 @@ export class BookRepository {
             row.Stock ? Number(row.Stock) : 0,
             row.ImageUrl ? String(row.ImageUrl) : "",
             row.Category ? Number(row.Category) : 0,
-            row.Id ? Number(row.Id) : 0
+            row.Id ? Number(row.Id) : 0,
+            row.Name ? String(row.Name) : ""
         )));
     };
     static async updateBook(isbn: string, updatedData: Partial<BookModel>): Promise<BookModel | null> {

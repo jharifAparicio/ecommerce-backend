@@ -14,4 +14,15 @@ export class CompraController {
             });
         }
     }
+    static async getComprasByUserId(req: Request, res: Response): Promise<void> {
+        try{
+            const userId = Number(req.params.userId);
+            const compras = await CompraService.getComprasByUserId(userId);
+            res.json(compras);
+        }catch(error){
+            res.status(400).json({
+                message: "Error al obtener las compras controller -> " + error
+            });
+        }
+    }
 }
