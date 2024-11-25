@@ -21,7 +21,4 @@ app.use('/api', Router);
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`solicitudes cors permitidas desde: ${process.env.ORIGIN_CORS}`);
-});
+app.listen(PORT, () => { });
